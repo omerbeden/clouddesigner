@@ -1,38 +1,57 @@
-.App {
-  text-align: center;
+/* General App Layout */
+.app {
+  display: flex;  
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; 
+  
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Sidebar Styling */
+.sidebar {  
+  background-color: #ddd;
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;/* Add a slight shadow for separation */
+}
+
+/* Canvas Styling */
+.canvas {
+  flex-grow: 1;
+  height: 100%; 
+  position: relative;
+  display: flex;  
+  padding: 20px;
+  flex-direction: row;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 5px;
+
+}
+
+/* ConfigPanel Styling */
+.config-panel {
+  width: 25%; /* Takes up one part of the container */
+  background-color: #f0f0f0;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.close-icon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: red;
+  color: white;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: 10px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
