@@ -8,7 +8,8 @@ function Droppable(props) {
     id: 'droppable',
   });
   const style = {
-    color: isOver ? 'green' : undefined,
+    'background-color': isOver ? 'green' : undefined,
+    display:'flex'
   };
   
   

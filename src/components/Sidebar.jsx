@@ -15,7 +15,7 @@ function Sidebar({items}) {
       <hr></hr>
       <p>Components</p>
       
-      {items.map((item) => (
+      {items.map((item) => (        
         <SidebarItem key ={item.id} item={item} ></SidebarItem>
         
       ))}

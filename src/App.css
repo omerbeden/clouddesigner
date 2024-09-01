@@ -9,8 +9,8 @@
 
 /* Sidebar Styling */
 .sidebar {  
-  background-color: #ddd;
   padding: 10px;
+  background-color: red;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;/* Add a slight shadow for separation */
@@ -19,6 +19,7 @@
 /* Canvas Styling */
 .canvas {
   flex-grow: 1;
+  background-color: red;
   height: 100%; 
   position: relative;
   display: flex;  
@@ -33,7 +34,6 @@
 /* ConfigPanel Styling */
 .config-panel {
   width: 25%; /* Takes up one part of the container */
-  background-color: #f0f0f0;
   padding: 10px;
   box-sizing: border-box;
   display: flex;

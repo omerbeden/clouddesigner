@@ -29,7 +29,7 @@ const SidebarItem = React.memo(({ item }) => {
 
   return (
     <div>
-      <button
+      <div
         id={item.id}
         ref={setNodeRef}
         onClick={() => hadnleClick()}
@@ -38,20 +38,7 @@ const SidebarItem = React.memo(({ item }) => {
         {...attributes}
       >
         {item.name}
-
-        {item.dropped ? (
-          <span
-            className="close-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              document.getElementById(item.id).remove();
-              console.log(item);
-            }}
-          >
-            &times;
-          </span>
-        ) : null}
-      </button>
+      </div>
     </div>
   );
 });

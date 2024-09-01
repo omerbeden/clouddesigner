@@ -1,19 +1,26 @@
-import "./App.css";
-import React, { useState } from "react";
-import Canvas from "./components/Canvas";
-import ConfigPanel from "./components/ConfigPanel";
-import Sidebar from "./components/Sidebar";
+import React, { useCallback, useState, useRef } from "react";
+import { ReactFlow, useNodesState, Background, Controls, MiniMap } from "@xyflow/react";
+
+import "@xyflow/react/dist/style.css";
 import { DndContext, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
+import Sidebar from "./components/Sidebar";
 import Droppable from "./components/Droppable";
+import "./App.css";
+import "@xyflow/react/dist/style.css";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import ConfigPanel from "./components/ConfigPanel";
 
-function App() {
-  const [canvasItems, setCanvasItems] = useState([]);
+export default function App() {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  //const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  const droppableRef = useRef(null);
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10,
     },
   });
+  const sensors = useSensors(mouseSensor);
 
   const [items, setItems] = useState([
     { id: 1, name: "LoadBalancer", dropped: false },
@@ -23,33 +30,45 @@ function App() {
     { id: 5, name: "SQS", dropped: false },
   ]);
 
-  const sensors = useSensors(mouseSensor);
+
+  function handleDragEnd(event) {
+    const rect = droppableRef.current.getBoundingClientRect();
+    
+    const newNode = {
+      id: Math.random().toString(),
+      position: {
+        x: event.active.rect.current.translated?.left - rect.x,
+        y: event.active.rect.current.translated?.top - rect.y,
+      },
+      data: { label: event.active.data.current.name },
+      type: "default",
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+  }
 
   return (
     <div className="app">
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+        modifiers={[restrictToWindowEdges]}
+      >
         <Sidebar items={items}></Sidebar>
 
         <Droppable>
-          <Canvas items={canvasItems} />
+          <div ref={droppableRef} style={{ width: "70vw", height: "100vh" }}>
+            <ReactFlow nodes={nodes} onNodesChange={onNodesChange}
+            onnode
+             >
+              <Background />
+              <Controls/>
+              <MiniMap/>
+            </ReactFlow>
+          </div>
         </Droppable>
       </DndContext>
-
       <ConfigPanel></ConfigPanel>
     </div>
   );
-
-  function handleDragEnd(event) {
-    if (event.over && event.over.id === "droppable") {
-      const item = {
-        ...event.active.data.current,
-        id: Math.random(),
-        dropped: true,
-      };
-
-      setCanvasItems((c) => [...c, item]);
-    }
-  }
 }
-
-export default App;
