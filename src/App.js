@@ -1,5 +1,12 @@
-import React, { useCallback, useState, useRef } from "react";
-import { ReactFlow, useNodesState, Background, Controls, MiniMap } from "@xyflow/react";
+import React, { useRef, useState } from "react";
+import {
+  ReactFlow,
+  useNodesState,
+  Background,
+  Controls,
+  MiniMap,
+  Panel,
+} from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 import { DndContext, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
@@ -9,6 +16,14 @@ import "./App.css";
 import "@xyflow/react/dist/style.css";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import ConfigPanel from "./components/ConfigPanel";
+import {  
+  ThemeProvider,
+  createTheme,
+  Box,  
+  ButtonGroup,
+} from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import Button from "@mui/material/Button";
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -22,18 +37,11 @@ export default function App() {
   });
   const sensors = useSensors(mouseSensor);
 
-  const [items, setItems] = useState([
-    { id: 1, name: "LoadBalancer", dropped: false },
-    { id: 2, name: "EC2", dropped: false },
-    { id: 3, name: "Lambda", dropped: false },
-    { id: 4, name: "SNS", dropped: false },
-    { id: 5, name: "SQS", dropped: false },
-  ]);
-
+  const [openConfig, setOpenConfig] = useState(false);
 
   function handleDragEnd(event) {
     const rect = droppableRef.current.getBoundingClientRect();
-    
+
     const newNode = {
       id: Math.random().toString(),
       position: {
@@ -47,28 +55,64 @@ export default function App() {
     setNodes((nds) => [...nds, newNode]);
   }
 
-  return (
-    <div className="app">
-      <DndContext
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-        modifiers={[restrictToWindowEdges]}
-      >
-        <Sidebar items={items}></Sidebar>
+  const onNodeClick = (event, node) => {
+    setOpenConfig((c) => true);
+  };
 
-        <Droppable>
-          <div ref={droppableRef} style={{ width: "70vw", height: "100vh" }}>
-            <ReactFlow nodes={nodes} onNodesChange={onNodesChange}
-            onnode
-             >
-              <Background />
-              <Controls/>
-              <MiniMap/>
-            </ReactFlow>
-          </div>
-        </Droppable>
-      </DndContext>
-      <ConfigPanel></ConfigPanel>
-    </div>
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
+
+  return (
+    <React.StrictMode>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+
+        <div className="app">
+          <DndContext
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+            modifiers={[restrictToWindowEdges]}
+          >
+            <Sidebar></Sidebar>
+
+            <Droppable>
+              <div
+                ref={droppableRef}
+                style={{ width: "90vw", height: "100vh" }}
+              >
+                <ReactFlow
+                  nodes={nodes}
+                  onNodesChange={onNodesChange}
+                  onNodeClick={onNodeClick}
+                  colorMode="dark"
+                >
+                  <Background />
+                  <Controls />
+                  <MiniMap nodeStrokeWidth={3} zoomable pannable />
+                  <Panel position="top-center">
+                    <Box>
+                      <ButtonGroup
+                        variant="contained"
+                        aria-label="Basic button group"
+                      >
+                        <Button>Export</Button>
+                        <Button>Cost Estimation</Button>
+                      </ButtonGroup>
+                    </Box>
+                  </Panel>
+                </ReactFlow>
+              </div>
+            </Droppable>
+          </DndContext>
+          <ConfigPanel
+            drawerStatus={openConfig}
+            onClose={() => setOpenConfig((c) => false)}
+          ></ConfigPanel>
+        </div>
+      </ThemeProvider>
+    </React.StrictMode>
   );
 }
