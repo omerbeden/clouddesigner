@@ -1,12 +1,18 @@
-import { Autocomplete, Drawer, TextField, Box, Input } from "@mui/material";
-import * as React from "react";
+import {
+  Autocomplete,
+  Drawer,
+  TextField,
+  Box,  
+  Typography,
+} from "@mui/material";
 
-function ConfigPanel({ selected, drawerStatus, onClose }) {
-
-
-  const [resourceName, setResourceName] = React.useState(null);
-
-
+function ConfigPanel({
+  nodeSettings,
+  selectedNode,
+  onInputChange,
+  drawerStatus,
+  onClose,
+}) {
   const countries = [
     { code: "AD", label: "Andorra", phone: "376" },
     {
@@ -27,17 +33,22 @@ function ConfigPanel({ selected, drawerStatus, onClose }) {
       <Box
         sx={{
           margin: "10px",
-          display:"flex",
+          display: "flex",
           flexDirection: "column",
           gap: "10px",
-
         }}
       >
-         <TextField id="outlined-basic" label="Resource name" variant="outlined"
-                     value={resourceName}
-                     onChange={(event) => {
-                      setResourceName(event.target.value);
-                     }}  />
+        <Typography variant="h6" gutterBottom>
+          {selectedNode?.data.label}
+        </Typography>
+        <TextField
+          id="outlined-basic"
+          label={"Resource name"}
+          variant="outlined"
+          name="resourceName"
+          value={nodeSettings.resourceName}
+          onChange={onInputChange}
+        />
         <Autocomplete
           autoHighlight
           getOptionLabel={(option) => option.label}
@@ -63,14 +74,8 @@ function ConfigPanel({ selected, drawerStatus, onClose }) {
               </Box>
             );
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Region"
-             />
-          )}
+          renderInput={(params) => <TextField {...params} label="Region" />}
         ></Autocomplete>
-       
       </Box>
     </Drawer>
   );

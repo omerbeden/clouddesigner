@@ -16,18 +16,15 @@ import "./App.css";
 import "@xyflow/react/dist/style.css";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import ConfigPanel from "./components/ConfigPanel";
-import {  
-  ThemeProvider,
-  createTheme,
-  Box,  
-  ButtonGroup,
-} from "@mui/material";
+import { ThemeProvider, createTheme, Box, ButtonGroup } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import Button from "@mui/material/Button";
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   //const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const [selectedNode, setSeletectedNode] = useState(null);
 
   const droppableRef = useRef(null);
   const mouseSensor = useSensor(MouseSensor, {
@@ -57,6 +54,8 @@ export default function App() {
 
   const onNodeClick = (event, node) => {
     setOpenConfig((c) => true);
+
+    setSeletectedNode((ni) => node);
   };
 
   const darkTheme = createTheme({
@@ -64,6 +63,26 @@ export default function App() {
       mode: "dark",
     },
   });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === selectedNode.id
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                settings: {
+                  ...node.data.settings,
+                  [name]: value,
+                },
+              },
+            }
+          : node
+      )
+    );
+  };
 
   return (
     <React.StrictMode>
@@ -108,6 +127,9 @@ export default function App() {
             </Droppable>
           </DndContext>
           <ConfigPanel
+            nodeSettings={selectedNode?.data.settings || {}}
+            selectedNode={selectedNode}
+            onInputChange={handleInputChange}
             drawerStatus={openConfig}
             onClose={() => setOpenConfig((c) => false)}
           ></ConfigPanel>
