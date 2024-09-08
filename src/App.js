@@ -19,6 +19,9 @@ import ConfigPanel from "./components/ConfigPanel";
 import { ThemeProvider, createTheme, Box, ButtonGroup } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import Button from "@mui/material/Button";
+import ImageNode from "./components/ImageNode";
+
+const nodeTypes = { imageNode: ImageNode };
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -41,14 +44,20 @@ export default function App() {
 
     const newNode = {
       id: Math.random().toString(),
+
       position: {
         x: event.active.rect.current.translated?.left - rect.x,
         y: event.active.rect.current.translated?.top - rect.y,
       },
-      data: { label: event.active.data.current.name },
-      type: "default",
+      data: {
+        label: event.active.data.current.name,
+        svg: event.active.data.current.svg,
+      },
+      style: event.active.data.current.style,
+      type: event.active.data.current.type,
     };
 
+    console.log(newNode);
     setNodes((nds) => [...nds, newNode]);
   }
 
@@ -107,6 +116,7 @@ export default function App() {
                   onNodesChange={onNodesChange}
                   onNodeClick={onNodeClick}
                   colorMode="dark"
+                  nodeTypes={nodeTypes}
                 >
                   <Background />
                   <Controls />
