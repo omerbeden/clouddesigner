@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   ReactFlow,
   useNodesState,
@@ -20,10 +20,34 @@ import { ThemeProvider, createTheme, Box, ButtonGroup } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import Button from "@mui/material/Button";
 import ImageNode from "./components/ImageNode";
+import GroupNode from "./components/GroupNode";
 
-const nodeTypes = { imageNode: ImageNode };
+const nodeTypes = { imageNode: ImageNode, groupNode: GroupNode };
 
 export default function App() {
+  useEffect(() => {
+    const errorHandler = (e) => {
+      if (
+        e.message.includes(
+          "ResizeObserver loop completed with undelivered notifications" ||
+            "ResizeObserver loop limit exceeded"
+        )
+      ) {
+        const resizeObserverErr = document.getElementById(
+          "webpack-dev-server-client-overlay"
+        );
+        if (resizeObserverErr) {
+          resizeObserverErr.style.display = "none";
+        }
+      }
+    };
+    window.addEventListener("error", errorHandler);
+
+    return () => {
+      window.removeEventListener("error", errorHandler);
+    };
+  }, []);
+
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   //const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 

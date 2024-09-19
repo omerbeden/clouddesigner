@@ -13,20 +13,19 @@ export default memo(({ data }) => {
       ></Handle>
 
       <Box
+        component="center"
         sx={{
-          display: "flex",
-          flexDirection:"column",
-          alignItems: "center",
-          margin: "10px",
-          marginTop: "5px",
-          padding: "10px",          
-          borderStyle: "solid",
+          padding: "10px",
+          borderStyle: "dashed",
           borderRadius: "5px",
+          borderColor: "gray",
+          borderWidth: "2px",
         }}
       >
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle2" gutterBottom>
           {data.label}
         </Typography>
+
         {data.svg}
       </Box>
     </>

@@ -3,11 +3,10 @@ import SidebarItem from "./SidebarItem";
 import { Box, Divider, Input, Typography } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
-import {nodes  as items} from "./nodeData"
+import { nodes as items } from "./nodeData";
 
 function Sidebar() {
   const [input, setInput] = useState("");
-
 
   return (
     <Box>
