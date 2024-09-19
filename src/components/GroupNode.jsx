@@ -14,7 +14,7 @@ export default memo(({ data }) => {
         <ResizeIcon />
       </NodeResizeControl>
       <Box
-        component={"center"}
+        component={"center"}        
         sx={{
           padding: "10px",
           borderStyle: "dashed",

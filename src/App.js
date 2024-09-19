@@ -1,6 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
+/* eslint-disable import/no-anonymous-default-export */
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   ReactFlow,
+  useReactFlow,
+  ReactFlowProvider,
   useNodesState,
   Background,
   Controls,
@@ -24,7 +27,7 @@ import GroupNode from "./components/GroupNode";
 
 const nodeTypes = { imageNode: ImageNode, groupNode: GroupNode };
 
-export default function App() {
+function App() {
   useEffect(() => {
     const errorHandler = (e) => {
       if (
@@ -81,7 +84,6 @@ export default function App() {
       type: event.active.data.current.type,
     };
 
-    console.log(newNode);
     setNodes((nds) => [...nds, newNode]);
   }
 
@@ -96,6 +98,54 @@ export default function App() {
       mode: "dark",
     },
   });
+
+  const { screenToFlowPosition } = useReactFlow();
+
+  const isNodeInsideGroup = (nodePosition, groupNode) => {
+    const { x: groupX, y: groupY } = groupNode.position;
+
+    const groupWidth = groupNode.measured.width; 
+    const groupHeight = groupNode.measured.height;
+
+    const nodeX = nodePosition.x;
+    const nodeY = nodePosition.y;
+
+    return (
+      nodeX > groupX &&
+      nodeX < groupX + groupWidth &&
+      nodeY > groupY &&
+      nodeY < groupY + groupHeight
+    );
+  };
+
+  function onNodeDragStop(event, node) {
+    if (node.type !== "groupNode") {
+      const dropPosition = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const groupNodes = nodes.filter((n) => n.type === "groupNode");
+
+      groupNodes.forEach((groupNode) => {
+        if (isNodeInsideGroup(dropPosition, groupNode)) {
+          setNodes((nds) =>
+            nds.map((n) =>
+              n.id === selectedNode.id
+                ? {
+                    ...n,
+                    parentId: groupNode.id,
+                    extent: "parent",
+                  }
+                : n
+            )
+          );
+        }
+      });
+      console.log(nodes);
+      console.log(selectedNode);
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -141,6 +191,7 @@ export default function App() {
                   onNodeClick={onNodeClick}
                   colorMode="dark"
                   nodeTypes={nodeTypes}
+                  onNodeDragStop={onNodeDragStop}
                 >
                   <Background />
                   <Controls />
@@ -172,3 +223,9 @@ export default function App() {
     </React.StrictMode>
   );
 }
+
+export default () => (
+  <ReactFlowProvider>
+    <App />
+  </ReactFlowProvider>
+);
