@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   ReactFlow,
   useReactFlow,
@@ -26,6 +26,7 @@ import ImageNode from "./components/ImageNode";
 import GroupNode from "./components/GroupNode";
 
 const nodeTypes = { imageNode: ImageNode, groupNode: GroupNode };
+const sidePanelWidth = 165;
 
 function App() {
   useEffect(() => {
@@ -67,24 +68,27 @@ function App() {
   const [openConfig, setOpenConfig] = useState(false);
 
   function handleDragEnd(event) {
-    const rect = droppableRef.current.getBoundingClientRect();
+    if (event.delta.x > sidePanelWidth) {
+      const rect = droppableRef.current.getBoundingClientRect();
+      const newNode = {
+        id: Math.random().toString(),
 
-    const newNode = {
-      id: Math.random().toString(),
+        position: {
+          x: event.active.rect.current.translated?.left - rect.x,
+          y: event.active.rect.current.translated?.top - rect.y,
+        },
+        data: {
+          label: event.active.data.current.name,
+          svg: event.active.data.current.svg,
+        },
+        style: event.active.data.current.style,
+        type: event.active.data.current.type,
+      };
 
-      position: {
-        x: event.active.rect.current.translated?.left - rect.x,
-        y: event.active.rect.current.translated?.top - rect.y,
-      },
-      data: {
-        label: event.active.data.current.name,
-        svg: event.active.data.current.svg,
-      },
-      style: event.active.data.current.style,
-      type: event.active.data.current.type,
-    };
+      setNodes((nds) => [...nds, newNode]);
 
-    setNodes((nds) => [...nds, newNode]);
+      groupNodes(newNode.position, newNode);
+    }
   }
 
   const onNodeClick = (event, node) => {
@@ -104,7 +108,7 @@ function App() {
   const isNodeInsideGroup = (nodePosition, groupNode) => {
     const { x: groupX, y: groupY } = groupNode.position;
 
-    const groupWidth = groupNode.measured.width; 
+    const groupWidth = groupNode.measured.width;
     const groupHeight = groupNode.measured.height;
 
     const nodeX = nodePosition.x;
@@ -118,32 +122,34 @@ function App() {
     );
   };
 
-  function onNodeDragStop(event, node) {
+  function groupNodes(dropPosition, node) {
+    const groupNodes = nodes.filter((n) => n.type === "groupNode");
+
+    groupNodes.forEach((groupNode) => {
+      if (isNodeInsideGroup(dropPosition, groupNode)) {
+        setNodes((nds) =>
+          nds.map((n) =>
+            n.id === node.id
+              ? {
+                  ...n,
+                  parentId: groupNode.id,
+                  extent: "parent",
+                }
+              : n
+          )
+        );
+      }
+    });
+  }
+
+  function onNodeDrag(event, node) {
     if (node.type !== "groupNode") {
       const dropPosition = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
-      const groupNodes = nodes.filter((n) => n.type === "groupNode");
-
-      groupNodes.forEach((groupNode) => {
-        if (isNodeInsideGroup(dropPosition, groupNode)) {
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === selectedNode.id
-                ? {
-                    ...n,
-                    parentId: groupNode.id,
-                    extent: "parent",
-                  }
-                : n
-            )
-          );
-        }
-      });
-      console.log(nodes);
-      console.log(selectedNode);
+      groupNodes(dropPosition, node);
     }
   }
 
@@ -191,7 +197,7 @@ function App() {
                   onNodeClick={onNodeClick}
                   colorMode="dark"
                   nodeTypes={nodeTypes}
-                  onNodeDragStop={onNodeDragStop}
+                  onNodeDrag={onNodeDrag}
                 >
                   <Background />
                   <Controls />

@@ -20,7 +20,7 @@ const SidebarItem = React.memo(({ item }) => {
     gap: "10px",
   };
 
-  const hadnleClick = () => {
+  const handleClick = () => {
     console.log("clikced");
   };
 
@@ -28,7 +28,7 @@ const SidebarItem = React.memo(({ item }) => {
     <div
       id={item.id}
       ref={setNodeRef}
-      onClick={() => hadnleClick()}
+      onClick={() => handleClick()}
       style={style}
       {...listeners}
       {...attributes}
