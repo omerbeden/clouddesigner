@@ -18,6 +18,7 @@ const SidebarItem = React.memo(({ item }) => {
     padding: "10px",
     margin: "5px",
     gap: "10px",
+    alignItems: "center",
   };
 
   const handleClick = () => {

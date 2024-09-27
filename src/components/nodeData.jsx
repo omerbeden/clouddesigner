@@ -1,7 +1,7 @@
 export const nodes = [
   {
     id: 1,
-    name: "LoadBalancer",
+    name: "Load Balancer",
     dropped: false,
     type: "imageNode",
     svg: (

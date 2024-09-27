@@ -9,13 +9,20 @@ function Sidebar() {
   const [input, setInput] = useState("");
 
   return (
-    <Box>
+    <Box
+      sx={{
+        margin: "10px",
+        width: "200px",
+        maxWidth: "200px",
+        minWidth: "200px",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
-          margin: "10px",
+          alignItems: "center",          
           marginTop: "5px",
+          marginBottom:"10px"
         }}
       >
         <SearchIcon />
@@ -31,9 +38,11 @@ function Sidebar() {
       </Typography>
       <Divider></Divider>
 
-      {items.map((item) => (
-        <SidebarItem key={item.id} item={item}></SidebarItem>
-      ))}
+      {items
+        .filter((item) => item.name.toLowerCase().includes(input.toLowerCase()))
+        .map((filteredItem) => (
+          <SidebarItem key={filteredItem.id} item={filteredItem} />
+        ))}
     </Box>
   );
 }
