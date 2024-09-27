@@ -2,9 +2,12 @@ import {
   Autocomplete,
   Drawer,
   TextField,
-  Box,  
+  Box,
   Typography,
+  IconButton,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { ArrowBackIosNew, ArrowForward, ArrowRight } from "@mui/icons-material";
 
 function ConfigPanel({
   nodeSettings,
@@ -29,15 +32,30 @@ function ConfigPanel({
   ];
 
   return (
-    <Drawer open={drawerStatus} onClose={onClose} anchor="right">
+    <Drawer
+      open={drawerStatus}
+      onClose={onClose}
+      anchor="right"
+      variant="persistent"
+    >
       <Box
         sx={{
           margin: "10px",
           display: "flex",
           flexDirection: "column",
           gap: "10px",
+          alignItems: "start",
         }}
       >
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={onClose}
+          edge="start"
+        >
+          <ArrowRight />
+        </IconButton>
+
         <Typography variant="h6" gutterBottom>
           {selectedNode?.data.label}
         </Typography>
