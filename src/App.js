@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useRef, useState, useEffect,useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   ReactFlow,
   useReactFlow,
@@ -144,6 +144,20 @@ function App() {
     });
   }
 
+  function ungroupNode(node) {
+    setNodes((nds) =>
+      nds.map((n) =>
+        n.id === node.id
+          ? {
+              ...n,
+              parentId: null,
+              extent: null,
+            }
+          : n
+      )
+    );
+  }
+
   function onNodeDrag(event, node) {
     if (node.type !== "groupNode") {
       const dropPosition = screenToFlowPosition({
@@ -177,16 +191,11 @@ function App() {
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    [setEdges]
   );
 
-
-  function onNodeDoubleClick(node, event) { 
-
-    console.log("double clikcked")
-    console.log(event)
-    console.log(node)
-
+  function onNodeDoubleClick(event, node) {
+    ungroupNode(node);
   }
   return (
     <React.StrictMode>
@@ -211,12 +220,12 @@ function App() {
                   edges={edges}
                   onNodesChange={onNodesChange}
                   onEdgesChange={onEdgesChange}
-                 onNodeClick={onNodeClick}
+                  onNodeClick={onNodeClick}
                   colorMode="dark"
                   nodeTypes={nodeTypes}
                   onNodeDrag={onNodeDrag}
                   onConnect={onConnect}
-                  onNodeDoubleClick={onNodeDoubleClick}                  
+                  onNodeDoubleClick={onNodeDoubleClick}
                 >
                   <Background />
                   <Controls />
