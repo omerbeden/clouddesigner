@@ -6,9 +6,9 @@ export default memo(({ data }) => {
   return (
     <>
       <Handle
-        type="target"
+        type="source"
         style={{ background: "#c95353" }}
-        position={Position.Top}
+        position={Position.Right}
         isConnectable={true}
       ></Handle>
 
@@ -28,6 +28,13 @@ export default memo(({ data }) => {
 
         {data.svg}
       </Box>
+
+      <Handle
+        type="target"
+        style={{ background: "#c95353" }}
+        position={Position.Left}
+        isConnectable={true}
+      ></Handle>
     </>
   );
 });

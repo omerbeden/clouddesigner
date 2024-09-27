@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,useCallback } from "react";
 import {
   ReactFlow,
   useReactFlow,
   ReactFlowProvider,
   useNodesState,
+  useEdgesState,
+  addEdge,
   Background,
   Controls,
   MiniMap,
@@ -53,7 +55,7 @@ function App() {
   }, []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  //const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const [selectedNode, setSeletectedNode] = useState(null);
 
@@ -173,6 +175,19 @@ function App() {
     );
   };
 
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges],
+  );
+
+
+  function onNodeDoubleClick(node, event) { 
+
+    console.log("double clikcked")
+    console.log(event)
+    console.log(node)
+
+  }
   return (
     <React.StrictMode>
       <ThemeProvider theme={darkTheme}>
@@ -193,11 +208,15 @@ function App() {
               >
                 <ReactFlow
                   nodes={nodes}
+                  edges={edges}
                   onNodesChange={onNodesChange}
-                  onNodeClick={onNodeClick}
+                  onEdgesChange={onEdgesChange}
+                 onNodeClick={onNodeClick}
                   colorMode="dark"
                   nodeTypes={nodeTypes}
                   onNodeDrag={onNodeDrag}
+                  onConnect={onConnect}
+                  onNodeDoubleClick={onNodeDoubleClick}                  
                 >
                   <Background />
                   <Controls />
