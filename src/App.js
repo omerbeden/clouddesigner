@@ -57,7 +57,7 @@ function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const [selectedNode, setSeletectedNode] = useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
   const droppableRef = useRef(null);
   const mouseSensor = useSensor(MouseSensor, {
@@ -81,7 +81,7 @@ function App() {
         },
         data: {
           label: event.active.data.current.name,
-          svg: event.active.data.current.svg,
+          svg: event.active.data.current.svg,          
         },
         style: event.active.data.current.style,
         type: event.active.data.current.type,
@@ -94,10 +94,14 @@ function App() {
   }
 
   const onNodeClick = (event, node) => {
-    setOpenConfig((c) => true);
-
-    setSeletectedNode((ni) => node);
+    setSelectedNode((n)=>node);            
   };
+
+  useEffect(() => {
+    if (selectedNode) {
+      setOpenConfig((c)=>true);      
+    }
+  }, [selectedNode]);
 
   const darkTheme = createTheme({
     palette: {
@@ -245,8 +249,7 @@ function App() {
               </div>
             </Droppable>
           </DndContext>
-          <ConfigPanel
-            nodeSettings={selectedNode?.data.settings || {}}
+          <ConfigPanel            
             selectedNode={selectedNode}
             onInputChange={handleInputChange}
             drawerStatus={openConfig}
