@@ -1,9 +1,27 @@
 export const nodes = [
   {
     id: 1,
-    name: "Load Balancer",
-    dropped: false,
+    name: "Application Load Balancer",
     type: "imageNode",
+    settings: {
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+      region: "eu-east-1",
+      scheme: {
+        elementType: "radio",
+        options: ["Internal", "Internet-facing"],
+      },
+      ipAddressType: {
+        elementType: "radio",
+        options: ["IPv4", "Dualstack", "Dualstack without public IPv4"],
+      },
+      tags: {
+        elementType: "dictionary",
+        options: [{ Environment: "dev" }],
+      },
+    },
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -35,7 +53,6 @@ export const nodes = [
     id: 2,
     name: "EC2",
     type: "imageNode",
-    dropped: false,
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -63,7 +80,6 @@ export const nodes = [
   {
     id: 3,
     name: "Lambda",
-    dropped: false,
     type: "imageNode",
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
@@ -92,7 +108,6 @@ export const nodes = [
   {
     id: 4,
     name: "SNS",
-    dropped: false,
     type: "imageNode",
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +139,6 @@ export const nodes = [
   {
     id: 5,
     name: "SQS",
-    dropped: false,
     type: "imageNode",
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +171,6 @@ export const nodes = [
   {
     id: 6,
     name: "VPC",
-    dropped: false,
     type: "groupNode",
     svg: (
       <svg height="48" width="48" xmlns="http://www.w3.org/2000/svg">

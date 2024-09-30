@@ -81,7 +81,8 @@ function App() {
         },
         data: {
           label: event.active.data.current.name,
-          svg: event.active.data.current.svg,          
+          svg: event.active.data.current.svg,
+          settings: event.active.data.current.settings,
         },
         style: event.active.data.current.style,
         type: event.active.data.current.type,
@@ -94,12 +95,12 @@ function App() {
   }
 
   const onNodeClick = (event, node) => {
-    setSelectedNode((n)=>node);            
+    setSelectedNode((n) => node);
   };
 
   useEffect(() => {
     if (selectedNode) {
-      setOpenConfig((c)=>true);      
+      setOpenConfig((c) => true);
     }
   }, [selectedNode]);
 
@@ -174,23 +175,44 @@ function App() {
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === selectedNode.id
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                settings: {
-                  ...node.data.settings,
-                  [name]: value,
+    if (e.target === undefined) {
+      const { label } = e;
+      console.log(e);
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === selectedNode.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  settings: {
+                    ...node.data.settings,
+                    region: label,
+                  },
                 },
-              },
-            }
-          : node
-      )
-    );
+              }
+            : node
+        )
+      );
+    } else {
+      const { name, value } = e.target;
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === selectedNode.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  settings: {
+                    ...node.data.settings,
+                    [name]: value,
+                  },
+                },
+              }
+            : node
+        )
+      );
+    }
   };
 
   const onConnect = useCallback(
@@ -249,7 +271,7 @@ function App() {
               </div>
             </Droppable>
           </DndContext>
-          <ConfigPanel            
+          <ConfigPanel
             selectedNode={selectedNode}
             onInputChange={handleInputChange}
             drawerStatus={openConfig}
