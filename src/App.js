@@ -205,7 +205,7 @@ function App() {
                   ...node.data,
                   settings: {
                     ...node.data.settings,
-                    [name]: value,
+                    [name]: {...node.data.settings[name],value},
                   },
                 },
               }
@@ -223,6 +223,21 @@ function App() {
   function onNodeDoubleClick(event, node) {
     ungroupNode(node);
   }
+
+
+  useEffect(() => {
+    
+  console.log(nodes)
+  
+  }, [nodes])
+
+  useEffect(() => {
+    console.log("selected node:")  
+    console.log(selectedNode)
+    
+    }, [selectedNode])
+    
+  
   return (
     <React.StrictMode>
       <ThemeProvider theme={darkTheme}>
@@ -273,6 +288,7 @@ function App() {
           </DndContext>
           <ConfigPanel
             selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode}
             onInputChange={handleInputChange}
             drawerStatus={openConfig}
             onClose={() => setOpenConfig((c) => false)}

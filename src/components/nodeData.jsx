@@ -18,7 +18,7 @@ export const nodes = [
         options: ["IPv4", "Dualstack", "Dualstack without public IPv4"],
       },
       tags: {
-        elementType: "dictionary",
+        elementType: "tag",
         options: [{ Environment: "dev" }],
       },
     },
@@ -53,6 +53,12 @@ export const nodes = [
     id: 2,
     name: "EC2",
     type: "imageNode",
+    settings:{
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+    },
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -81,6 +87,12 @@ export const nodes = [
     id: 3,
     name: "Lambda",
     type: "imageNode",
+    settings:{
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+    },
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -109,6 +121,12 @@ export const nodes = [
     id: 4,
     name: "SNS",
     type: "imageNode",
+    settings:{
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+    },
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -140,6 +158,12 @@ export const nodes = [
     id: 5,
     name: "SQS",
     type: "imageNode",
+    settings:{
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+    },
     svg: (
       <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -172,6 +196,12 @@ export const nodes = [
     id: 6,
     name: "VPC",
     type: "groupNode",
+    settings:{
+      resourceName: {
+        elementType  : "textField",
+        value :""
+      },
+    },
     svg: (
       <svg height="48" width="48" xmlns="http://www.w3.org/2000/svg">
         <path

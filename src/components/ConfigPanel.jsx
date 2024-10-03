@@ -14,10 +14,16 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
 import FormLabel from "@mui/material/FormLabel";
 
-function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
+function ConfigPanel({
+  selectedNode,
+  setSelectedNode,
+  onInputChange,
+  drawerStatus,
+  onClose,
+}) {
   const regions = [
     { name: "US East (N. Virginia)", label: "eu-east-1" },
-    { name: "US East (Ohio)", label: "	us-east-2" },
+    { name: "US East (Ohio)", label: "us-east-2" },
     { name: "US East (N. Virginia)", label: "us-east-1" },
     { name: "US West (N. California)", label: "us-west-1" },
     { name: "US West (Oregon)	", label: "us-west-2" },
@@ -94,28 +100,33 @@ function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
               if (name === "region") {
                 return (
                   <Autocomplete
-                  disablePortal
+                    disablePortal
                     key={selectedNode?.id.concat(index)}
                     autoHighlight
                     getOptionLabel={(option) => option.label}
-                    options={regions}                    
+                    options={regions}
                     onChange={(event, newValue) => {
                       onInputChange(newValue);
+                      setSelectedNode((prevNode) => ({
+                        ...prevNode,
+                        data: {
+                          ...prevNode.data,
+                          settings: {
+                            ...prevNode.data.settings,
+                            region: newValue,
+                          },
+                        },
+                      }));                  
                     }}
                     sx={{ width: 300 }}
-                    value={
-                      regions.find(
-                        (country) =>
-                          country.label === selectedNode?.data?.settings[name]
-                      ) || null
-                    }
+                    value={selectedNode?.data?.settings[name]?.value}
                     renderOption={(props, option) => {
                       const { key, ...optionProps } = props;
                       return (
                         <Box
                           key={key}
                           component="li"
-                          sx={{ mr: 2, flexShrink: 0 }} 
+                          sx={{ mr: 2, flexShrink: 0 }}
                           {...optionProps}
                         >
                           {option.name} ({option.label})
@@ -123,7 +134,7 @@ function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
                       );
                     }}
                     renderInput={(params) => (
-                      <TextField {...params} label="Region" />
+                      <TextField {...params} label={name} />
                     )}
                   ></Autocomplete>
                 );
@@ -131,6 +142,8 @@ function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
                 selectedNode?.data?.settings[name].elementType === "radio"
               ) {
                 const obj = selectedNode?.data?.settings[name];
+                const selectedName = "selected".concat(name).toString();
+
                 return (
                   <div key={selectedNode?.id.concat(index)}>
                     <FormLabel key={"demo-row-radio-buttons-group-label"}>
@@ -139,9 +152,21 @@ function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
 
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
-                      name={"selected-".concat(name).toString()}
-                      onChange={onInputChange}
-                      aria-label="aa"
+                      name={selectedName}
+                      onChange={(e, v) => {
+                        onInputChange(e);
+                        setSelectedNode((prevNode) => ({
+                          ...prevNode,
+                          data: {
+                            ...prevNode.data,
+                            settings: {
+                              ...prevNode.data.settings,
+                              selectedName: e.target.value,
+                            },
+                          },
+                        }));
+                      }}
+                      value={selectedNode?.data?.settings[selectedName]?.value}
                       key={selectedNode?.id.concat(index)}
                     >
                       {obj.options.map((option, index2) => (
@@ -156,9 +181,10 @@ function ConfigPanel({ selectedNode, onInputChange, drawerStatus, onClose }) {
                   </div>
                 );
               } else if (
-                selectedNode?.data?.settings[name].elementType === "dictionary"
+                selectedNode?.data?.settings[name].elementType === "tag"
               ) {
                 return (
+                  
                   <Box key={selectedNode?.id.concat(index)}>
                     <TextField
                       key={selectedNode?.id.concat(index + 1)}
