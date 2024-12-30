@@ -11,6 +11,7 @@ import {
   Controls,
   MiniMap,
   Panel,
+  MarkerType,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
@@ -28,6 +29,13 @@ import ImageNode from "./components/ImageNode";
 import GroupNode from "./components/GroupNode";
 
 const nodeTypes = { imageNode: ImageNode, groupNode: GroupNode };
+const defaultEdgeOptions = {
+  type: 'floating',
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    color: '#b1b1b7',
+  },
+};
 const sidePanelWidth = 165;
 
 function App() {
@@ -267,6 +275,7 @@ function App() {
                   onNodeDrag={onNodeDrag}
                   onConnect={onConnect}
                   onNodeDoubleClick={onNodeDoubleClick}
+                  defaultEdgeOptions={defaultEdgeOptions}
                 >
                   <Background />
                   <Controls />
