@@ -178,14 +178,23 @@ function App() {
         y: event.clientY,
       });
 
+      reorderNodes()
       groupNodes(dropPosition, node);
     }
+  }
+  const reorderNodes = () =>{
+    const reorderedNodes = [...nodes].sort((a,b)=>{
+      if (a.type==="groupNode" && b.type !== "groupNode") return -1;
+      if(a.type!=="groupNode" && b.type === "groupNode") return 1;
+      return 0;
+    })
+
+    setNodes((nds)=>reorderedNodes)
   }
 
   const handleInputChange = (e) => {
     if (e.target === undefined) {
-      const { label } = e;
-      console.log(e);
+      const { label } = e;      
       setNodes((nds) =>
         nds.map((node) =>
           node.id === selectedNode.id
@@ -231,21 +240,7 @@ function App() {
   function onNodeDoubleClick(event, node) {
     ungroupNode(node);
   }
-
-
-  useEffect(() => {
-    
-  console.log(nodes)
-  
-  }, [nodes])
-
-  useEffect(() => {
-    console.log("selected node:")  
-    console.log(selectedNode)
-    
-    }, [selectedNode])
-    
-  
+      
   return (
     <React.StrictMode>
       <ThemeProvider theme={darkTheme}>
